@@ -1,0 +1,40 @@
+name: Automated Jest Tests
+
+# 1. กำหนด Trigger: ให้ทำงานเมื่อมี Push หรือ Pull Request ไปยัง branch main
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  run-tests:
+    name: Run Unit & Integration Tests
+    runs-on: ubuntu-latest # ใช้ Ubuntu เป็น OS ในการรัน Test
+
+    steps:
+      # Step 1: Checkout โค้ดลงมาที่ Runner
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: ติดตั้ง Node.js Environment
+      - name: Set up Node.js
+        uses: actions/node@v4
+        with:
+          node-version: '24' # กำหนด Node.js version ตามที่โปรเจกต์ใช้
+          cache: 'npm'       # Cache dependencies เพื่อให้สร้างภาพรวมเร็วขึ้น
+
+      # Step 3: ติดตั้ง Dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # Step 4: รัน Jest Unit + Integration Tests และสร้าง Report
+      - name: Run Tests with Coverage
+        run: npm test -- --coverage
+
+      # Step 5: (Optional) อัปโหลด Coverage Report เป็น Artifact
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-report
+          path: coverage/
