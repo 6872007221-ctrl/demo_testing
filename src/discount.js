@@ -4,7 +4,7 @@ function calculateDiscount(amount, memberType) {
   
   switch (memberType) {
     case 'GOLD':
-      return amount * 0.20; // ลด 20%
+      return amount * 0.50; // ลด 20%
     case 'SILVER':
       return amount * 0.10; // ลด 10%
     default:
